@@ -9,8 +9,9 @@
  */
 class Pico_Base {
 
-    private $base_url = null;
-    private $theme_url = null;
+    protected $base_url = null,
+            $theme_url = null,
+            $theme_dir = null;
 
     public function __construct() {
 
@@ -21,6 +22,21 @@ class Pico_Base {
     }
 
     public function before_render(&$twig_vars, &$twig) {
+
+        //var_dump($twig_vars);
+
+        $this->theme_url = $twig_vars['theme_url'];
+
+        $this->theme_dir = $twig_vars['theme_dir'];
+
+        //theme config----------------------
+
+        if(file_exists($this->theme_dir.'/config.php'))
+        include_once $this->theme_dir.'/config.php';
+        if(isset($theme_config))
+        $twig_vars['theme'] = $theme_config;
+
+        //-----------------------------------
 
         $base_pack = $this->base_url . '/plugins/' . basename(__DIR__);
 
@@ -48,7 +64,7 @@ class Pico_Base {
 
             $twig_vars['jquery'] = $this->js($js.'/jquery-1.10.2.min.js');
 
-            $twig_vars['theme_stylesheet'] = '';
+            $twig_vars['theme_stylesheet'] = $this->css($this->theme_url.'/stylesheet.css');
 
         endif;
     }
