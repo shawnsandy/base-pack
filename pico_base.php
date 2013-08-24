@@ -30,6 +30,7 @@ class Pico_Base {
         $this->theme_dir = $twig_vars['theme_dir'];
 
         //theme config----------------------
+        //use to save user the trouble of editing the theme...
 
         if(file_exists($this->theme_dir.'/config.php'))
         include_once $this->theme_dir.'/config.php';
