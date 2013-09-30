@@ -65,7 +65,7 @@ class Pico_Base {
 
             $twig_vars['jquery'] = $this->js($js.'/jquery-1.10.2.min.js');
 
-            $twig_vars['theme_stylesheet'] = $this->css($this->theme_url.'/stylesheet.css');
+            $twig_vars['theme_stylesheet'] = $this->css($this->theme_url.'/assets/stylesheet.css');
 
         endif;
     }
@@ -80,6 +80,7 @@ class Pico_Base {
         $style = "<link rel=\"stylesheet\" href=\"{$files}\" />";
         return $style;
     }
+
 
 }
 
