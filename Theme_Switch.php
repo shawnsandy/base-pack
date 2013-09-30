@@ -12,7 +12,9 @@
  */
 class Theme_Switch {
 
-    private $active_themes = null, $base_url;
+    private $active_themes = null,
+            $base_url,
+            $theme = null;
 
     public function __construct() {
         if (!isset($_SESSION))
@@ -25,16 +27,23 @@ class Theme_Switch {
 
     public function request_url(&$url) {
 
-        $this->base_url = $url;
-        if (isset($_GET['theme']) and $_GET['theme'] != 'close'):
-            $_SESSION['theme'] = $_GET['theme'];
-        endif;
+        if (preg_match('/switch/i', $url)):
+
+            $paths = explode('/', $url);
+            if (isset($paths[1])):
+                $this->theme = $paths[1];
+                if (!isset($_SESSION['theme']) or empty($_SESSION['theme']))
+                    $_SESSION['theme'] = $this->theme;
+            endif;
+            //reset the url to home
+            $url = '';
+        endif;   
     }
 
     public function config_loaded(&$settings) {
 
         // delete session
-        if (isset($_GET['theme']) and trim($_GET['theme'], '/') == 'close'):
+        if ($this->theme === 'close'):
             unset($_SESSION['theme']);
             header("Location:  {$settings['base_url']}");
             exit();
