@@ -12,65 +12,56 @@
  */
 class Theme_Switch {
 
+    private $active_themes = null, $base_url;
+
+    public function __construct() {
+        if (!isset($_SESSION))
+            session_start();
+    }
+
     public function plugins_loaded() {
 
     }
 
     public function request_url(&$url) {
 
-    }
-
-    public function before_load_content(&$file) {
-
-    }
-
-    public function after_load_content(&$file, &$content) {
-
-    }
-
-    public function before_404_load_content(&$file) {
-
-    }
-
-    public function after_404_load_content(&$file, &$content) {
-
+        $this->base_url = $url;
+        if (isset($_GET['theme']) and $_GET['theme'] != 'close'):
+            $_SESSION['theme'] = $_GET['theme'];
+        endif;
     }
 
     public function config_loaded(&$settings) {
 
-    }
+        // delete session
+        if (isset($_GET['theme']) and trim($_GET['theme'], '/') == 'close'):
+            unset($_SESSION['theme']);
+            header("Location:  {$settings['base_url']}");
+            exit();
+        endif;
 
-    public function before_read_file_meta(&$headers) {
+        // change the theme setting
+        if (isset($_SESSION["theme"])):
+            $theme = THEMES_DIR . $_SESSION['theme'] . '/index.html';
+            if (file_exists($theme)):
+                $settings['theme'] = $_SESSION['theme'];
+            endif;
+        endif;
 
-    }
-
-    public function file_meta(&$meta) {
-//var_dump($meta);
-    }
-
-    public function content_parsed(&$content) {
-
-    }
-
-    public function get_page_data(&$data, $page_meta) {
-
-//var_dump($page_meta);
-    }
-
-    public function get_pages(&$pages, &$current_page, &$prev_page, &$next_page) {
-
-    }
-
-    public function before_twig_register() {
-
+        //get theme list
+        if (isset($settings['theme-list'])):
+            $this->active_themes = $settings['theme_list'];
+        endif;
     }
 
     public function before_render(&$twig_vars, &$twig) {
 
+        if (isset($_SESSION['theme']))
+            $twig_vars['preview_theme'] = $_SESSION['theme'];
     }
 
     public function after_render(&$output) {
-
+        $directory = THEMES_DIR;
     }
 
 }
